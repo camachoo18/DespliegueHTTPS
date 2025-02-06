@@ -43,10 +43,16 @@ async function sendMessage(event) {
     event.preventDefault();
 
     const content = messageInput.value;
-    const user = userInput.value;
+    let user = userInput.value;
 
-    if (!content || !user) {
-        alert('El mensaje y el usuario son obligatorios.');
+    // Asignar "Anónimo" si el campo del usuario está vacío
+    if (!user) {
+        user = 'Anónimo';
+    }
+
+    // Validar que el contenido no esté vacío
+    if (!content) {
+        alert('El mensaje es obligatorio.');
         return;
     }
 
@@ -61,7 +67,7 @@ async function sendMessage(event) {
         if (response.ok) {
             const newMessage = await response.json();
             messageInput.value = '';  // Limpiar el campo de mensaje
-            userInput.value = '';     // Limpiar el campo de usuario
+            userInput.value = '';     // Limpiar el campo de usuario (aunque ahora se usa "Anónimo" por defecto)
             fetchMessages();          // Volver a cargar los mensajes
         } else {
             console.error('Error al enviar el mensaje:', response.statusText);
