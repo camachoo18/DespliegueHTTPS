@@ -1,39 +1,47 @@
 const express = require('express');
+const https = require('https');
+const fs = require('fs');
 const path = require('path');
 const cors = require('cors');
 const { getAllMessages, addMessage } = require('./database');
+
 const app = express();
 const port = 3000;
 
 const API_KEY = '1234567890abcdef';  // API key hardcodeada
 
-// Configuración de CORS: Permitir solicitudes de todos los orígenes y métodos (GET, POST, etc.)
+// Configuración de CORS
 app.use(cors({
-    origin: '*',  // Permite solicitudes desde cualquier origen
-    methods: ['GET', 'POST'],  // Permite solicitudes GET y POST
-    allowedHeaders: ['Content-Type', 'APIKEY']  // Permite estos encabezados
+    origin: '*',
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['Content-Type', 'APIKEY']
 }));
 
-app.use(express.static(path.join(__dirname, 'public')));  // Sirve archivos estáticos desde la carpeta 'public'
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 
-// Ruta para obtener los mensajes (debe estar antes de la ruta para servir el HTML)
+// Ruta para la página principal
+app.get('/', (req, res) => {
+    res.send('Bienvenido a la API de mensajes');
+});
+
+// Ruta para obtener los mensajes
 app.get('/messages', (req, res) => {
     getAllMessages((err, messages) => {
         if (err) {
             res.status(500).json({ error: 'Error al obtener los mensajes' });
         } else {
-            res.json({ messages });  // Respuesta JSON con los mensajes
+            res.json({ messages });
         }
     });
 });
 
-// Ruta para agregar un mensaje (POST)
+// Ruta para agregar un mensaje
 app.post('/messages', (req, res) => {
     const { content, user } = req.query;
     const apiKey = req.headers['apikey'];
 
-    // Verificar si la APIKEY es válida
+    // Verificar la APIKEY
     if (apiKey !== API_KEY) {
         return res.status(401).json({ error: 'APIKEY no válida' });
     }
@@ -42,7 +50,7 @@ app.post('/messages', (req, res) => {
         return res.status(400).json({ error: 'El contenido del mensaje es obligatorio' });
     }
 
-    const username = user ? user : 'Anónimo'; // Asignar "Anónimo" si el usuario no se proporciona
+    const username = user ? user : 'Anónimo';  // Asignar "Anónimo" si no hay usuario
 
     addMessage(content, username, (err, message) => {
         if (err) {
@@ -53,12 +61,13 @@ app.post('/messages', (req, res) => {
     });
 });
 
-// Ruta para servir el archivo HTML, debe estar después de las rutas para la API
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));  // Sirve el archivo index.html cuando se accede a /
-});
+// Configuración de HTTPS
+const options = {
+    cert: fs.readFileSync(path.join(__dirname, 'fullchain.pem')),
+    key: fs.readFileSync(path.join(__dirname, 'privkey.pem'))
+};
 
-// Iniciar el servidor
-app.listen(port, () => {
-    console.log(`Servidor en http://localhost:${port}`);
+// Crear servidor HTTPS
+https.createServer(options, app).listen(port, () => {
+    console.log(`Servidor HTTPS en https://localhost:${port}`);
 });
