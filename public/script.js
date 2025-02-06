@@ -6,17 +6,17 @@ const messageList = document.getElementById('message-list');
 const messageForm = document.getElementById('message-form');
 const messageInput = document.getElementById('message');
 const userInput = document.getElementById('user');
-const feedbackElement = document.getElementById('feedback'); // Área para feedback visual
 
 // Función para obtener y mostrar los mensajes
 async function fetchMessages() {
     try {
-        const response = await fetch('http://localhost:3000/messages', {
+        const response = await fetch('http://dev3.cyberbunny.online:3000/', {
             method: 'GET',
             headers: {
                 'APIKEY': API_KEY
             }
         });
+        
 
         if (response.ok) {
             const data = await response.json();
@@ -40,26 +40,15 @@ async function sendMessage(event) {
     event.preventDefault();
 
     const content = messageInput.value;
-    let user = userInput.value.trim();  // Obtener el nombre del usuario
+    const user = userInput.value;
 
-    // Limpiar feedback previo
-    feedbackElement.textContent = '';
-    feedbackElement.classList.remove('success', 'error');
-
-    if (!content) {
-        // Mostrar mensaje de error si no hay mensaje
-        feedbackElement.textContent = '¡Error! El mensaje es obligatorio.';
-        feedbackElement.classList.add('error');
+    if (!content || !user) {
+        alert('El mensaje y el usuario son obligatorios.');
         return;
     }
 
-    // Si el campo de nombre está vacío, asignamos "Anónimo"
-    if (!user) {
-        user = 'Anónimo';
-    }
-
     try {
-        const response = await fetch('http://localhost:3000/messages?content=' + encodeURIComponent(content) + '&user=' + encodeURIComponent(user), {
+        const response = await fetch('http://dev3.cyberbunny.online:3000/?content=' + encodeURIComponent(content) + '&user=' + encodeURIComponent(user), {
             method: 'POST',
             headers: {
                 'APIKEY': API_KEY
@@ -70,20 +59,12 @@ async function sendMessage(event) {
             const newMessage = await response.json();
             messageInput.value = '';  // Limpiar el campo de mensaje
             userInput.value = '';     // Limpiar el campo de usuario
-
-            // Mostrar mensaje de éxito
-            feedbackElement.textContent = '¡Mensaje enviado con éxito!';
-            feedbackElement.classList.add('success');
             fetchMessages();          // Volver a cargar los mensajes
         } else {
             console.error('Error al enviar el mensaje:', response.statusText);
-            feedbackElement.textContent = '¡Error al enviar el mensaje!';
-            feedbackElement.classList.add('error');
         }
     } catch (error) {
         console.error('Error en la solicitud:', error);
-        feedbackElement.textContent = '¡Error en la conexión!';
-        feedbackElement.classList.add('error');
     }
 }
 

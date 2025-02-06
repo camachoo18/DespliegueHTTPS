@@ -11,8 +11,9 @@ const API_KEY = '1234567890abcdef';  // API key hardcodeada
 
 // Configuración de CORS: Permitir solicitudes de todos los orígenes y métodos (GET, POST, etc.)
 app.use(cors({
-    origin: '*',  // Acepta solicitudes desde cualquier origen (puedes restringirlo a un dominio específico si es necesario)
+    origin: '*',  // Permite solicitudes desde cualquier origen
     methods: ['GET', 'POST'],  // Permite solicitudes GET y POST
+    allowedHeaders: ['Content-Type', 'APIKEY']  // Permite estos encabezados
 }));
 
 app.use(express.static(path.join(__dirname, 'public')));  // Sirve archivos estáticos desde la carpeta 'public'
