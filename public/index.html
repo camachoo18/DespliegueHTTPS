@@ -1,0 +1,28 @@
+<!-- /public/index.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mensajes</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Mensajes</h1>
+        <div id="message-list"></div>
+
+        <!-- Formulario para enviar mensaje -->
+        <form id="message-form">
+            <input type="text" id="message" placeholder="Escribe tu mensaje..." required />
+            <input type="text" id="user" placeholder="Tu nombre..." />
+            <button type="submit">Enviar</button>
+        </form>
+
+        <!-- Área de feedback para mostrar éxito o error -->
+        <div id="feedback" class="feedback"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
