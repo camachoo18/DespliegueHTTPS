@@ -9,9 +9,9 @@ const port = 3000;
 
 const API_KEY = '1234567890abcdef';  // API key hardcodeada
 
-// Configuración de CORS: Permitir solicitudes de todos los orígenes y métodos (GET, POST, etc.)
+// Configuración de CORS: Permitir solicitudes desde el frontend específico
 app.use(cors({
-    origin: '*',  // Permite solicitudes desde cualquier origen
+    origin: 'http://dev3.cyberbunny.online',  // Permite solicitudes solo desde tu dominio
     methods: ['GET', 'POST'],  // Permite solicitudes GET y POST
     allowedHeaders: ['Content-Type', 'APIKEY']  // Permite estos encabezados
 }));
@@ -19,9 +19,9 @@ app.use(cors({
 app.use(express.static(path.join(__dirname, 'public')));  // Sirve archivos estáticos desde la carpeta 'public'
 app.use(express.json());
 
-// Ruta para la página principal (no sirve el frontend)
-app.get('/', (req, res) => {
-    res.send('Bienvenido a la API de mensajes');
+// Ruta para la página principal y servir el frontend
+app.get('/messages', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // Ruta para obtener los mensajes
@@ -49,7 +49,7 @@ app.post('/messages', (req, res) => {
         return res.status(400).json({ error: 'El contenido del mensaje es obligatorio' });
     }
 
-    const username = user ? user : 'Anónimo'; // Asignar "Anónimo" si el usuario no se proporciona
+    const username = user && user.trim() ? user : 'Anónimo'; // Asignar "Anónimo" si el usuario no se proporciona
 
     addMessage(content, username, (err, message) => {
         if (err) {
@@ -58,11 +58,6 @@ app.post('/messages', (req, res) => {
             res.status(201).json(message);  // Devolver el mensaje agregado
         }
     });
-});
-
-// Servir el archivo frontend cuando se accede a /messages
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 app.listen(port, () => {

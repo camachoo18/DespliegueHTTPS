@@ -10,7 +10,7 @@ const userInput = document.getElementById('user');
 // Función para obtener y mostrar los mensajes
 async function fetchMessages() {
     try {
-        const response = await fetch('http://dev3.cyberbunny.online:3000/', {
+        const response = await fetch('/messages', {
             method: 'GET',
             headers: {
                 'APIKEY': API_KEY
@@ -48,7 +48,7 @@ async function sendMessage(event) {
     }
 
     try {
-        const response = await fetch('http://dev3.cyberbunny.online:3000/?content=' + encodeURIComponent(content) + '&user=' + encodeURIComponent(user), {
+        const response = await fetch('/messages?content=' + encodeURIComponent(content) + '&user=' + encodeURIComponent(user), {
             method: 'POST',
             headers: {
                 'APIKEY': API_KEY
