@@ -1,2 +1,3 @@
-curl -X POST -H "Content-Type: application/json" -H "apikey: 123456" -d '{"message": "Un mensaje"}' http://dev3.cyberbunny.online:3000/message
-curl -H "apikey: 123456" http://dev3.cyberbunny.online:3000/message
+curl -X POST "http://localhost:3000/messages?content=Hola%20Mundo&user=Juan" -H "APIKEY: 1234567890abcdef"
+
+curl -X GET "http://localhost:3000/messages" -H "APIKEY: 1234567890abcdef"
