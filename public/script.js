@@ -16,10 +16,12 @@ async function fetchMessages() {
                 'APIKEY': API_KEY
             }
         });
-        
+
+        const textResponse = await response.text();  // Obtener la respuesta como texto
+        console.log('Respuesta del servidor:', textResponse);  // Ver qué devuelve el servidor
 
         if (response.ok) {
-            const data = await response.json();
+            const data = JSON.parse(textResponse);  // Intentar analizar el texto como JSON
             messageList.innerHTML = ''; // Limpiar los mensajes existentes
             data.messages.forEach(message => {
                 const messageElement = document.createElement('div');
@@ -34,6 +36,7 @@ async function fetchMessages() {
         console.error('Error en la solicitud:', error);
     }
 }
+
 
 // Función para enviar un nuevo mensaje
 async function sendMessage(event) {
