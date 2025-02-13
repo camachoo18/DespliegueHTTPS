@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');  // Importamos el paquete cors
 const app = express();
+const path = require('path');
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
