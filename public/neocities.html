@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conexión con los servidores de Camacho</title>
+</head>
+<body>
+    <h1>Bienvenido a la página de Neocities</h1>
+    <button id="fetchMessages">Obtener Mensajes</button>
+    <div id="messages"></div>
+
+    <script>
+        document.getElementById('fetchMessages').addEventListener('click', () => {
+            // Definimos las URLs para dev1 hasta dev5
+            const urls = [
+                'http://dev1.cyberbunny.online:3000/message',
+                'http://dev2.cyberbunny.online:3000/message',
+                'http://dev3.cyberbunny.online:3000/message',
+                'http://dev4.cyberbunny.online:3000/message',
+                'http://dev5.cyberbunny.online:3000/message'
+            ];
+
+            // Limpiamos el contenedor de mensajes antes de cargar los nuevos
+            const messagesDiv = document.getElementById('messages');
+            messagesDiv.innerHTML = '';
+
+            // Iteramos sobre las URLs y hacemos un fetch para cada una
+            urls.forEach(url => {
+                fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'APIKEY': '123456' // Asegúrate de que esta API key coincida con la del servidor
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    console.log(`Conexión exitosa con ${url}`);
+                    return response.text(); // Se asume que el servidor devuelve un texto
+                })
+                .then(data => {
+                    const p = document.createElement('p');
+                    p.textContent = `Respuesta de ${url}: ${data}`;
+                    messagesDiv.appendChild(p);
+                })
+                .catch(error => {
+                    const p = document.createElement('p');
+                    p.textContent = `Error con ${url}: ${error.message}`;
+                    p.style.color = 'red';
+                    messagesDiv.appendChild(p);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
