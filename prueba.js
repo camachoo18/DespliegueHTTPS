@@ -9,7 +9,7 @@ app.use(express.json());
 app.use(cors()); 
 
 // Ruta principal que responde con el objeto
-app.get('/message', (req, res) => {
+app.get('/messages', (req, res) => {
   res.json({ mensaje: "hola soy camacho" });
 });
 app.get('/', (req, res) => {
